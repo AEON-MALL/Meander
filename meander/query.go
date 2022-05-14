@@ -25,3 +25,16 @@ type googlePhoto struct{
 	PhotoRef string `json:"photo_reference"`
 	URL string `json:"url"`
 }
+
+var APIKey string
+
+func (p *Place) Public() any{
+	return map[string]any{
+		"name": p.Name,
+		"icon": p.Icon,
+		"photos": p.Photos,
+		"vicinity": p.Vicinity,
+		"lat": p.Lat,
+		"lng": p.Lng,
+	}
+}

@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"meander/meander"
 	"net/http"
+	"os"
 )
 
 func main() {
+	meander.APIKey = os.Getenv("meander")
 	http.HandleFunc("/journeys",func(w http.ResponseWriter, r *http.Request){
 		respond(w, r, meander.Journeys)
 	})
