@@ -1,4 +1,6 @@
 package meander
+
+import "strings"
 type Cost int8
 const(
 	_ Cost = iota
@@ -28,4 +30,21 @@ func (l Cost) String() string{
 
 func ParceCost(s string) Cost{
 	return costStrings[s]
+}
+
+type CostRange struct {
+	From Cost
+	To Cost
+}
+
+func (r CostRange) String() string {
+	return r.From.String() + "..." + r.To.String()
+}
+
+func ParseCostRange(s string) *CostRange {
+	segs := strings.Split(s, "...")
+	return &CostRange{
+		From: ParceCost(segs[0]),
+		To: ParceCost(segs[1]),
+	}
 }
