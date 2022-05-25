@@ -35,3 +35,5 @@ func respond(w http.ResponseWriter, r *http.Request, data []any) error {
 	return json.NewEncoder(w).Encode(publicData)
 }
 
+
+
