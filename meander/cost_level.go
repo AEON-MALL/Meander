@@ -1,6 +1,9 @@
 package meander
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
 
 type Cost int8
 
@@ -43,10 +46,13 @@ func (r CostRange) String() string {
 	return r.From.String() + "..." + r.To.String()
 }
 
-func ParseCostRange(s string) *CostRange {
+func ParseCostRange(s string) (*CostRange, error) {
 	segs := strings.Split(s, "...")
+	if len(segs) != 2 {
+		return &CostRange{}, errors.New("不正な値の幅です")
+	}
 	return &CostRange{
 		From: ParceCost(segs[0]),
 		To:   ParceCost(segs[1]),
-	}
+	}, nil
 }

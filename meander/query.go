@@ -12,18 +12,18 @@ import (
 )
 
 type Place struct {
-	*googleGemetry `json:"gemetry"`
-	Name           string         `json:"name"`
-	Icon           string         `json:"icon"`
-	Photos         []*googlePhoto `json:"photos"`
-	Vicinity       string         `json:"vicinity"`
+	*googleGeometry `json:"geometry"`
+	Name            string         `json:"name"`
+	Icon            string         `json:"icon"`
+	Photos          []*googlePhoto `json:"photos"`
+	Vicinity        string         `json:"vicinity"`
 }
 
 type googleResponse struct {
 	Results []*Place `json:"results"`
 }
 
-type googleGemetry struct {
+type googleGeometry struct {
 	*googleLocation `json:"location"`
 }
 
@@ -61,12 +61,15 @@ func (p *Place) Public() any {
 func (q *Query) find(types string) (*googleResponse, error) {
 	u := "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 	vals := make(url.Values)
-	vals.Set("location", fmt.Sprintf("%g, %g", q.Lat, q.Lng))
+	vals.Set("location", fmt.Sprintf("%g,%g", q.Lat, q.Lng))
 	vals.Set("radius", fmt.Sprintf("%d", q.Radius))
 	vals.Set("types", types)
 	vals.Set("key", APIKey)
 	if len(q.CostRangeStr) > 0 {
-		r := ParseCostRange(q.CostRangeStr)
+		r, err := ParseCostRange(q.CostRangeStr)
+		if err != nil {
+			return nil, err
+		}
 		vals.Set("minprice", fmt.Sprintf("%d", int(r.From)-1))
 		vals.Set("maxprice", fmt.Sprintf("%d", int(r.To)-1))
 	}

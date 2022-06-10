@@ -2,20 +2,21 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	_ "log"
 	"meander/meander"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv"
 )
 
 func main() {
-	if err := loadEnv(); err != nil{
+	/*&if err := loadEnv(); err != nil {
 		return
-	}
+	}*/
+
+	meander.APIKey = "AIzaSyAZEZwUbm4QBz_ODRmgA4oHtbVdHZca4GE"
 
 	http.HandleFunc("/journeys", cors(func(w http.ResponseWriter, r *http.Request) {
 		respond(w, r, meander.Journeys)
@@ -24,9 +25,19 @@ func main() {
 		q := &meander.Query{
 			Journey: strings.Split(r.URL.Query().Get("journey"), "|"),
 		}
-		q.Lat, _ = strconv.ParseFloat(r.URL.Query().Get("lat"), 64)
-		q.Lng, _ = strconv.ParseFloat(r.URL.Query().Get("lng"), 64)
-		q.Radius, _ = strconv.Atoi(r.URL.Query().Get("radius"))
+		var err error
+		if q.Lat, err = strconv.ParseFloat(r.URL.Query().Get("lat"), 64); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if q.Lng, err = strconv.ParseFloat(r.URL.Query().Get("lng"), 64); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if q.Radius, err = strconv.Atoi(r.URL.Query().Get("radius")); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		q.CostRangeStr = r.URL.Query().Get("cost")
 		places := q.Run()
 		respond(w, r, places)
@@ -34,16 +45,16 @@ func main() {
 	http.ListenAndServe(":8080", http.DefaultServeMux)
 }
 
-
-func loadEnv() error{
+/*
+func loadEnv() error {
 	err := godotenv.Load(".env")
 	if err != nil {
 		return fmt.Errorf("unable read: %v", err)
-
 	}
 	meander.APIKey = os.Getenv("googleplaceapikey")
 	return nil
 }
+*/
 
 func respond(w http.ResponseWriter, r *http.Request, data []any) error {
 	publicData := make([]any, len(data))
