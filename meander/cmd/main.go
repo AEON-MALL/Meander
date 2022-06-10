@@ -16,8 +16,6 @@ func main() {
 		return
 	}*/
 
-	meander.APIKey = "AIzaSyAZEZwUbm4QBz_ODRmgA4oHtbVdHZca4GE"
-
 	http.HandleFunc("/journeys", cors(func(w http.ResponseWriter, r *http.Request) {
 		respond(w, r, meander.Journeys)
 	}))
