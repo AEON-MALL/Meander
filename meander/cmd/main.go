@@ -2,19 +2,21 @@ package main
 
 import (
 	"encoding/json"
-	_ "log"
+	"fmt"
 	"meander/meander"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
-	_ "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	/*&if err := loadEnv(); err != nil {
+	var err error
+	if meander.APIKey, err = loadEnv(); err != nil {
 		return
-	}*/
+	}
 
 	http.HandleFunc("/journeys", cors(func(w http.ResponseWriter, r *http.Request) {
 		respond(w, r, meander.Journeys)
@@ -43,16 +45,14 @@ func main() {
 	http.ListenAndServe(":8080", http.DefaultServeMux)
 }
 
-/*
-func loadEnv() error {
+func loadEnv() (string, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
-		return fmt.Errorf("unable read: %v", err)
+		return "", fmt.Errorf("unable read: %v", err)
 	}
-	meander.APIKey = os.Getenv("googleplaceapikey")
-	return nil
+	meander.APIKey = os.Getenv("GooglePlaceAPIkey")
+	return meander.APIKey, nil
 }
-*/
 
 func respond(w http.ResponseWriter, r *http.Request, data []any) error {
 	publicData := make([]any, len(data))

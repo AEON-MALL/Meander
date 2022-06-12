@@ -12,11 +12,11 @@ import (
 )
 
 type Place struct {
-	*googleGeometry `json:"geometry"`
-	Name            string         `json:"name"`
-	Icon            string         `json:"icon"`
-	Photos          []*googlePhoto `json:"photos"`
-	Vicinity        string         `json:"vicinity"`
+	Geometry *googleGeometry `json:"geometry"`
+	Name     string          `json:"name"`
+	Icon     string          `json:"icon"`
+	Photos   []*googlePhoto  `json:"photos"`
+	Vicinity string          `json:"vicinity"`
 }
 
 type googleResponse struct {
@@ -24,7 +24,7 @@ type googleResponse struct {
 }
 
 type googleGeometry struct {
-	*googleLocation `json:"location"`
+	Location *googleLocation `json:"location"`
 }
 
 type googleLocation struct {
@@ -53,8 +53,8 @@ func (p *Place) Public() any {
 		"icon":     p.Icon,
 		"photos":   p.Photos,
 		"vicinity": p.Vicinity,
-		"lat":      p.Lat,
-		"lng":      p.Lng,
+		"lat":      p.Geometry.Location.Lat,
+		"lng":      p.Geometry.Location.Lng,
 	}
 }
 
